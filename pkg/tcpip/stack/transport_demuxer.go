@@ -538,6 +538,14 @@ func (d *transportDemuxer) findAllEndpointsLocked(eps *transportEndpoints, id Tr
 		matchedEPs = append(matchedEPs, ep)
 	}
 
+	// Try to find a match with endpoint with address ANY listening to the port.
+	if id.LocalAddress != header.IPv4Any {
+		nid.LocalAddress = header.IPv4Any
+		if ep, ok := eps.endpoints[nid]; ok {
+			matchedEPs = append(matchedEPs, ep)
+		}
+	}
+
 	// Try to find a match with only the local port.
 	nid.LocalAddress = ""
 	if ep, ok := eps.endpoints[nid]; ok {
